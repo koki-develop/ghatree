@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import packageJson from "../package.json" with { type: "json" };
-import { type Input, run } from "./main";
+import { type Input, run } from "./run";
 
 const program = new Command();
 
