@@ -7,6 +7,7 @@ const program = new Command();
 
 type Options = {
   repo: string;
+  json: boolean;
 };
 
 function parseOptions(options: Options): Input {
@@ -32,12 +33,17 @@ program
   .name("ghatree")
   .version(packageJson.version)
   .option("--repo <repository>", "GitHub repository in owner/repo format")
+  .option("--json", "Output in JSON format")
   .action(async () => {
     const options = program.opts<Options>();
     const input = parseOptions(options);
     const node = await run(input);
 
-    treePrint(node);
+    if (options.json) {
+      console.log(JSON.stringify(node, null, 4));
+    } else {
+      treePrint(node);
+    }
   });
 
 program.parse(process.argv);
