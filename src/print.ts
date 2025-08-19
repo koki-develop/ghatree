@@ -45,7 +45,7 @@ function getNodeLabel(context: Context, node: Node): string {
       }
 
     case "job":
-      return chalk.yellow(node.name);
+      return `${chalk.yellow(node.name)}${node.children.length === 0 ? ` ${chalk.gray("(no dependencies)")}` : ""}`;
 
     case "action": {
       if (node.repository) {
