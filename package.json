@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "commander": "14.0.0",
+    "octokit": "5.0.3",
     "yaml": "2.8.1"
   },
   "devDependencies": {
