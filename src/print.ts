@@ -1,5 +1,10 @@
 import chalk from "chalk";
+import type { Repository } from "./github";
 import type { Node, RepositoryNode } from "./run";
+
+type Context = {
+  root: RepositoryNode;
+};
 
 const TREE_CHARS = {
   BRANCH: "├─",
@@ -8,7 +13,15 @@ const TREE_CHARS = {
   SPACE: "   ",
 } as const;
 
-function getNodeLabel(node: Node): string {
+function isSameRepository(
+  a: Repository | undefined,
+  b: Repository | undefined,
+): boolean {
+  if (!a || !b) return false;
+  return a.owner === b.owner && a.name === b.name;
+}
+
+function getNodeLabel(context: Context, node: Node): string {
   switch (node.type) {
     case "repository":
       if (!node.repository) {
@@ -18,10 +31,15 @@ function getNodeLabel(node: Node): string {
 
     case "workflow":
       if (node.repository) {
-        const repo = `${node.repository.owner}/${node.repository.name}`;
-        const path = node.path ? `/${node.path}` : "";
-        const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
-        return chalk.green(`${repo}${path}`) + ref;
+        if (isSameRepository(context.root.repository, node.repository)) {
+          const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
+          return chalk.green(`./${node.path}`) + ref;
+        } else {
+          const repo = `${node.repository.owner}/${node.repository.name}`;
+          const path = node.path ? `/${node.path}` : "";
+          const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
+          return chalk.green(`${repo}${path}`) + ref;
+        }
       } else {
         return chalk.green(`./${node.path}`);
       }
@@ -31,10 +49,16 @@ function getNodeLabel(node: Node): string {
 
     case "action": {
       if (node.repository) {
-        const repo = `${node.repository.owner}/${node.repository.name}`;
-        const path = node.path ? `/${node.path}` : "";
-        const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
-        return `${repo}${path}${ref}`;
+        if (isSameRepository(context.root.repository, node.repository)) {
+          const path = node.path ? `./${node.path}` : ".";
+          const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
+          return path + ref;
+        } else {
+          const repo = `${node.repository.owner}/${node.repository.name}`;
+          const path = node.path ? `/${node.path}` : "";
+          const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
+          return `${repo}${path}${ref}`;
+        }
       }
       if (node.path) {
         return `./${node.path}`;
@@ -45,12 +69,13 @@ function getNodeLabel(node: Node): string {
 }
 
 function printNode(
+  context: Context,
   node: Node,
   prefix: string = "",
   isLast: boolean = true,
   isRoot: boolean = false,
 ): void {
-  const label = getNodeLabel(node);
+  const label = getNodeLabel(context, node);
 
   if (isRoot) {
     console.log(label);
@@ -66,10 +91,13 @@ function printNode(
       : chalk.gray(TREE_CHARS.VERTICAL);
     const newPrefix = isRoot ? "" : prefix + extension;
 
-    printNode(child, newPrefix, isLastChild, false);
+    printNode(context, child, newPrefix, isLastChild, false);
   });
 }
 
 export function treePrint(node: RepositoryNode): void {
-  printNode(node, "", true, true);
+  const context = {
+    root: node,
+  };
+  printNode(context, node, "", true, true);
 }
