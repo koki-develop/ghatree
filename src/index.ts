@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import packageJson from "../package.json" with { type: "json" };
+import { treePrint } from "./print";
 import { type Input, run } from "./run";
 
 const program = new Command();
@@ -36,8 +37,7 @@ program
     const input = parseOptions(options);
     const node = await run(input);
 
-    // TODO: tree
-    console.log(JSON.stringify(node, null, 2));
+    treePrint(node);
   });
 
 program.parse(process.argv);
