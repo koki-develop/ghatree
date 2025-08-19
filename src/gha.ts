@@ -138,9 +138,13 @@ export function parseUses({
     uses.ref = ref.join("@");
   }
 
-  if (action.startsWith("./")) {
+  if (action.startsWith(".")) {
     uses.repository = workingRepository;
-    uses.path = action.slice(2);
+    if (action.startsWith("./")) {
+      uses.path = action.slice(2);
+    } else {
+      uses.path = action.slice(1);
+    }
   } else {
     const [owner, name, ...paths] = action.split("/");
     if (!owner || !name) {
