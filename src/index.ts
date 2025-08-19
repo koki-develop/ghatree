@@ -34,10 +34,10 @@ program
   .action(async () => {
     const options = program.opts<Options>();
     const input = parseOptions(options);
-    const nodes = await run(input);
+    const node = await run(input);
 
     // TODO: tree
-    console.log(JSON.stringify(nodes, null, 2));
+    console.log(JSON.stringify(node, null, 2));
   });
 
 program.parse(process.argv);

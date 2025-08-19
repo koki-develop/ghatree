@@ -12,7 +12,13 @@ export type Input = {
   repository: Repository | undefined;
 };
 
-export type Node = WorkflowNode | JobNode | ActionNode;
+export type Node = RepositoryNode | WorkflowNode | JobNode | ActionNode;
+
+export type RepositoryNode = {
+  type: "repository";
+  repository: Repository | undefined;
+  children: Node[];
+};
 
 export type WorkflowNode = {
   type: "workflow";
@@ -36,7 +42,7 @@ export type ActionNode = {
   children: Node[];
 };
 
-export async function run(input: Input): Promise<Node[]> {
+export async function run(input: Input): Promise<RepositoryNode> {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
   });
@@ -44,7 +50,11 @@ export async function run(input: Input): Promise<Node[]> {
     octokit,
   };
 
-  const nodes: Node[] = [];
+  const root: RepositoryNode = {
+    type: "repository",
+    repository: input.repository,
+    children: [],
+  };
 
   const workflowPaths = await fetchWorkflows(context, {
     repository: input.repository,
@@ -55,10 +65,10 @@ export async function run(input: Input): Promise<Node[]> {
       workflowPath,
       ref: undefined,
     });
-    nodes.push(node);
+    root.children.push(node);
   }
 
-  return nodes;
+  return root;
 }
 
 type ProcessWorkflowParams = {
