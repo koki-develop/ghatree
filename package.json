@@ -25,7 +25,8 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "commander": "14.0.0"
+    "commander": "14.0.0",
+    "yaml": "2.8.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
