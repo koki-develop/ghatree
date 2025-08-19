@@ -155,7 +155,7 @@ async function _processAction(
 
   const action = await fetchActionDefinition(context, {
     repository,
-    actionPath: actionPath || ".",
+    actionPath,
     ref,
   });
 
