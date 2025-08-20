@@ -1,3 +1,4 @@
+import ora from "ora";
 import type { Context } from "./context";
 import {
   fetchActionDefinition,
@@ -48,13 +49,22 @@ export async function run(context: Context): Promise<RepositoryNode> {
     repository: context.repository,
   });
   for (const workflowPath of workflowPaths) {
-    const node = await _processWorkflow(context, {
+    const spinner = ora(workflowPath).start();
+    await _processWorkflow(context, {
       repository: context.repository,
       workflowPath,
       ref: undefined,
-    });
-    root.dependencies.push(node);
+    })
+      .then((node) => {
+        root.dependencies.push(node);
+        spinner.succeed();
+      })
+      .catch((error) => {
+        spinner.fail();
+        throw error;
+      });
   }
+  process.stderr.write("\n");
 
   return root;
 }
