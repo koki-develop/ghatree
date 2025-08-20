@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/koki-develop/ghatree/compare/v0.2.0...v0.2.1) (2025-08-20)
+
+
+### Bug Fixes
+
+* Set id-token permission ([2266352](https://github.com/koki-develop/ghatree/commit/22663527e488a2f760ace053fb212f7b9fc4f570))
+
 ## [0.2.0](https://github.com/koki-develop/ghatree/compare/v0.1.0...v0.2.0) (2025-08-20)
 
 
