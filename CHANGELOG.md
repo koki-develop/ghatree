@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.4](https://github.com/koki-develop/ghatree/compare/v0.2.3...v0.2.4) (2025-08-20)
+
+
+### Bug Fixes
+
+* job.name -&gt; job.path ([1fea3ae](https://github.com/koki-develop/ghatree/commit/1fea3aedcbb48e54d8fe4e73fe7f94f9dde6db74))
+* **octokit:** Set throttle.enable to false ([0e31d47](https://github.com/koki-develop/ghatree/commit/0e31d47377995258f05ad5f039258b52cbc17d00))
+
 ## [0.2.3](https://github.com/koki-develop/ghatree/compare/v0.2.2...v0.2.3) (2025-08-20)
 
 
