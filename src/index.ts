@@ -32,6 +32,9 @@ function parseOptions(options: Options): Input {
 program
   .name("ghatree")
   .version(packageJson.version)
+  .description(
+    "Visualize GitHub Actions workflow dependencies as a tree structure.",
+  )
   .option("--repo <repository>", "GitHub repository in owner/repo format")
   .option("--json", "Output in JSON format")
   .action(async () => {
