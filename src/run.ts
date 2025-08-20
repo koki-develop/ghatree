@@ -26,7 +26,7 @@ export type WorkflowNode = {
 
 export type JobNode = {
   type: "job";
-  name: string;
+  path: string;
   dependencies: Node[];
 };
 
@@ -96,7 +96,7 @@ async function _processWorkflow(
   for (const [jobName, job] of Object.entries(workflow.jobs)) {
     const jobNode: JobNode = {
       type: "job",
-      name: jobName,
+      path: jobName,
       dependencies: [],
     };
 
