@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/koki-develop/ghatree/compare/v0.2.1...v0.2.2) (2025-08-20)
+
+
+### Bug Fixes
+
+* Install node with mise ([977c204](https://github.com/koki-develop/ghatree/commit/977c20419814421778b3e397a0bebd388894c026))
+
 ## [0.2.1](https://github.com/koki-develop/ghatree/compare/v0.2.0...v0.2.1) (2025-08-20)
 
 
