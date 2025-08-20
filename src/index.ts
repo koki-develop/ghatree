@@ -15,6 +15,7 @@ type Options = {
 function initializeContext(options: Options): Context {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
+    throttle: { enabled: false },
   });
 
   const context: Context = {
