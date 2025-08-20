@@ -58,3 +58,14 @@ Workflow and action definitions are cached in memory during execution to avoid r
 ## Testing Approach
 
 Tests use Bun's built-in test framework. Test files are colocated with source files using `.spec.ts` extension.
+
+## Important Implementation Details
+
+### Checkout State Tracking
+The tool tracks multiple repository checkouts within workflow steps to correctly resolve local action paths. When `actions/checkout` is used with different repositories or paths, the resolver maintains a state map to determine which repository context applies to relative action references.
+
+### Action Definition Resolution
+When fetching action definitions, the tool tries both `action.yml` and `action.yaml` filenames. Errors are collected and only thrown if both attempts fail.
+
+### Tree Visualization
+The print module uses chalk for colored output and special tree characters (├─, └─, │) to create the visual tree structure. Repository-relative paths are displayed differently from external dependencies for better clarity.
