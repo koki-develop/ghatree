@@ -177,17 +177,113 @@ type ProcessStepsParams = {
   steps: Step[];
 };
 
+type CheckoutState = {
+  originalRepository: Repository | undefined;
+  rootRepository: Repository | undefined;
+  checkouts: Map<string, Repository | undefined>;
+};
+
+function normalizePath(path: string): string {
+  if (!path) return "";
+  return path.replace(/^\.\//, "").replace(/\/$/, "");
+}
+
+function _updateCheckoutState(state: CheckoutState, step: Step): void {
+  if (!step.uses) {
+    return;
+  }
+  if (
+    step.uses !== "actions/checkout" &&
+    !step.uses.startsWith("actions/checkout@")
+  ) {
+    return;
+  }
+
+  if (step.with?.repository && step.with?.path) {
+    const [owner, name] = step.with.repository.split("/");
+    if (!owner || !name) {
+      return;
+    }
+    const repo: Repository = { owner, name };
+
+    if (step.with.path === "." || step.with.path === "./") {
+      state.rootRepository = repo;
+    } else {
+      state.checkouts.set(normalizePath(step.with.path), repo);
+    }
+    return;
+  }
+
+  if (step.with?.repository) {
+    const [owner, name] = step.with.repository.split("/");
+    if (!owner || !name) {
+      return;
+    }
+    const repo: Repository = { owner, name };
+    state.rootRepository = repo;
+    state.checkouts.clear();
+    return;
+  }
+
+  if (step.with?.path) {
+    if (step.with.path === "." || step.with.path === "./") {
+      state.rootRepository = state.originalRepository;
+    } else {
+      state.checkouts.set(
+        normalizePath(step.with.path),
+        state.originalRepository,
+      );
+    }
+    return;
+  }
+
+  state.rootRepository = state.originalRepository;
+  state.checkouts.clear();
+}
+
 async function _processSteps(
   context: Context,
   { repository, steps }: ProcessStepsParams,
 ): Promise<Node[]> {
   const nodes: Node[] = [];
+  const checkoutState: CheckoutState = {
+    originalRepository: repository,
+    rootRepository: repository,
+    checkouts: new Map(),
+  };
 
   for (const step of steps) {
     if (step.uses) {
+      _updateCheckoutState(checkoutState, step);
+
+      const { workingRepository, usesStr } = (() => {
+        if (step.uses === "." || !step.uses.startsWith("./")) {
+          return {
+            workingRepository: checkoutState.rootRepository,
+            usesStr: step.uses,
+          };
+        }
+
+        const actionPath = normalizePath(step.uses);
+        for (const [checkoutPath, repo] of checkoutState.checkouts.entries()) {
+          if (actionPath.startsWith(`${checkoutPath}/`)) {
+            const relativePath = actionPath.slice(checkoutPath.length + 1);
+            return {
+              workingRepository: repo,
+              usesStr: `./${relativePath}`,
+            };
+          }
+        }
+
+        return {
+          workingRepository: checkoutState.rootRepository,
+          usesStr: step.uses,
+        };
+      })();
+
       const uses = parseUses({
-        workingRepository: repository, // TODO: get working repository from checkout
-        str: step.uses,
+        workingRepository,
+        str: usesStr,
       });
       const actionNode = await _processAction(context, {
         repository: uses.repository,

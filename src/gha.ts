@@ -21,6 +21,9 @@ export type WorkflowJob = {
 
 export type Step = {
   uses: string | undefined;
+  with?: {
+    [key: string]: string;
+  };
 };
 
 export type ActionUses = {
