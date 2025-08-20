@@ -45,7 +45,7 @@ function getNodeLabel(context: Context, node: Node): string {
       }
 
     case "job":
-      return `${chalk.yellow(node.name)}${node.children.length === 0 ? ` ${chalk.gray("(no dependencies)")}` : ""}`;
+      return `${chalk.yellow(node.name)}${node.dependencies.length === 0 ? ` ${chalk.gray("(no dependencies)")}` : ""}`;
 
     case "action": {
       if (node.repository) {
@@ -84,8 +84,8 @@ function printNode(
     console.log(`${prefix}${chalk.gray(branch)} ${label}`);
   }
 
-  node.children.forEach((child, index) => {
-    const isLastChild = index === node.children.length - 1;
+  node.dependencies.forEach((child, index) => {
+    const isLastChild = index === node.dependencies.length - 1;
     const extension = isLast
       ? TREE_CHARS.SPACE
       : chalk.gray(TREE_CHARS.VERTICAL);

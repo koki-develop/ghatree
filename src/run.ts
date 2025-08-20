@@ -17,7 +17,7 @@ export type Node = RepositoryNode | WorkflowNode | JobNode | ActionNode;
 export type RepositoryNode = {
   type: "repository";
   repository: Repository | undefined;
-  children: Node[];
+  dependencies: Node[];
 };
 
 export type WorkflowNode = {
@@ -25,13 +25,13 @@ export type WorkflowNode = {
   repository: Repository | undefined;
   path: string;
   ref: string | undefined;
-  children: Node[];
+  dependencies: Node[];
 };
 
 export type JobNode = {
   type: "job";
   name: string;
-  children: Node[];
+  dependencies: Node[];
 };
 
 export type ActionNode = {
@@ -39,7 +39,7 @@ export type ActionNode = {
   repository: Repository | undefined;
   path: string | undefined;
   ref: string | undefined;
-  children: Node[];
+  dependencies: Node[];
 };
 
 export async function run(input: Input): Promise<RepositoryNode> {
@@ -53,7 +53,7 @@ export async function run(input: Input): Promise<RepositoryNode> {
   const root: RepositoryNode = {
     type: "repository",
     repository: input.repository,
-    children: [],
+    dependencies: [],
   };
 
   const workflowPaths = await fetchWorkflows(context, {
@@ -65,7 +65,7 @@ export async function run(input: Input): Promise<RepositoryNode> {
       workflowPath,
       ref: undefined,
     });
-    root.children.push(node);
+    root.dependencies.push(node);
   }
 
   return root;
@@ -86,7 +86,7 @@ async function _processWorkflow(
     repository,
     path: workflowPath,
     ref,
-    children: [],
+    dependencies: [],
   };
 
   const workflow = await fetchWorkflowDefinition(context, {
@@ -99,7 +99,7 @@ async function _processWorkflow(
     const jobNode: JobNode = {
       type: "job",
       name: jobName,
-      children: [],
+      dependencies: [],
     };
 
     if (job.uses) {
@@ -118,7 +118,7 @@ async function _processWorkflow(
         workflowPath: uses.path,
         ref: uses.ref,
       });
-      jobNode.children.push(reusableWorkflowNode);
+      jobNode.dependencies.push(reusableWorkflowNode);
     }
 
     if (job.steps) {
@@ -126,10 +126,10 @@ async function _processWorkflow(
         repository,
         steps: job.steps,
       });
-      jobNode.children.push(...stepNodes);
+      jobNode.dependencies.push(...stepNodes);
     }
 
-    node.children.push(jobNode);
+    node.dependencies.push(jobNode);
   }
 
   return node;
@@ -150,7 +150,7 @@ async function _processAction(
     repository,
     path: actionPath,
     ref,
-    children: [],
+    dependencies: [],
   };
 
   const action = await fetchActionDefinition(context, {
@@ -167,7 +167,7 @@ async function _processAction(
     repository,
     steps: action.runs.steps,
   });
-  node.children.push(...stepNodes);
+  node.dependencies.push(...stepNodes);
 
   return node;
 }
