@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/koki-develop/ghatree/compare/v0.1.0...v0.2.0) (2025-08-20)
+
+
+### Features
+
+* Handle checkout context for action resolution ([c208d35](https://github.com/koki-develop/ghatree/commit/c208d35ddfd55856205d474910a2aaa3762dfb2c))
+
 ## [0.1.0](https://github.com/koki-develop/ghatree/compare/v0.0.1...v0.1.0) (2025-08-19)
 
 
