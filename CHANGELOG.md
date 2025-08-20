@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.3](https://github.com/koki-develop/ghatree/compare/v0.2.2...v0.2.3) (2025-08-20)
+
+
+### Bug Fixes
+
+* 4 -&gt; 2 ([01cd9d9](https://github.com/koki-develop/ghatree/commit/01cd9d91084125fe6845ffc45d539eb48b63c4b5))
+* Add spinner ([9febc5e](https://github.com/koki-develop/ghatree/commit/9febc5e8a21e62ef098d81b320027a946ed79dd6))
+* children -&gt; dependencies ([12bf9db](https://github.com/koki-develop/ghatree/commit/12bf9db5f10bc58c73b16316d08c932f015ffdec))
+* Set description ([2bbd98d](https://github.com/koki-develop/ghatree/commit/2bbd98dbb6323f15cf6e313e77d3066979a31c92))
+
 ## [0.2.2](https://github.com/koki-develop/ghatree/compare/v0.2.1...v0.2.2) (2025-08-20)
 
 
