@@ -30,6 +30,56 @@ To specify a remote repository, use the `--repo` flag.
 $ npx ghatree@latest --repo koki-develop/ghatree
 ```
 
+To output in JSON format, use the `--json` flag.
+
+```bash
+$ npx ghatree@latest --json
+```
+
+<details><summary>Output Example</summary>
+
+```json5
+{
+  "type": "repository",
+  "repository": {
+    "owner": "koki-develop",
+    "name": "ghatree"
+  },
+  "dependencies": [
+    {
+      "type": "workflow",
+      "repository": {
+        "owner": "koki-develop",
+        "name": "ghatree"
+      },
+      "path": ".github/workflows/ci.yml",
+      "dependencies": [
+        {
+          "type": "job",
+          "name": "lint",
+          "dependencies": [
+            {
+              "type": "action",
+              "repository": {
+                "owner": "actions",
+                "name": "checkout"
+              },
+              "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+              "dependencies": []
+            },
+            // ...
+          ]
+        },
+        // ...
+      ]
+    },
+    // ...
+  ]
+}
+```
+
+</details>
+
 ## License
 
 [MIT](./LICENSE)
