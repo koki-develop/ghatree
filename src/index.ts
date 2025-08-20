@@ -51,7 +51,7 @@ program
     const node = await run(context);
 
     if (options.json) {
-      console.log(JSON.stringify(node, null, 4));
+      console.log(JSON.stringify(node, null, 2));
     } else {
       treePrint(context, node);
     }
