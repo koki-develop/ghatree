@@ -1,7 +1,9 @@
 import { Command } from "commander";
+import { Octokit } from "octokit";
 import packageJson from "../package.json" with { type: "json" };
+import type { Context } from "./context";
 import { treePrint } from "./print";
-import { type Input, run } from "./run";
+import { run } from "./run";
 
 const program = new Command();
 
@@ -10,8 +12,13 @@ type Options = {
   json: boolean;
 };
 
-function parseOptions(options: Options): Input {
-  const input: Input = {
+function initializeContext(options: Options): Context {
+  const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+  });
+
+  const context: Context = {
+    octokit,
     repository: undefined,
   };
 
@@ -23,10 +30,10 @@ function parseOptions(options: Options): Input {
         `Invalid repository format: ${options.repo}. Expected format: owner/repo`,
       );
     }
-    input.repository = { owner: parts[0]!, name: parts[1]! };
+    context.repository = { owner: parts[0]!, name: parts[1]! };
   }
 
-  return input;
+  return context;
 }
 
 program
@@ -39,13 +46,14 @@ program
   .option("--json", "Output in JSON format")
   .action(async () => {
     const options = program.opts<Options>();
-    const input = parseOptions(options);
-    const node = await run(input);
+    const context = initializeContext(options);
+
+    const node = await run(context);
 
     if (options.json) {
       console.log(JSON.stringify(node, null, 4));
     } else {
-      treePrint(node);
+      treePrint(context, node);
     }
   });
 

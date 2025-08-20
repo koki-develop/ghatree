@@ -1,4 +1,3 @@
-import { Octokit } from "octokit";
 import type { Context } from "./context";
 import {
   fetchActionDefinition,
@@ -7,10 +6,6 @@ import {
   type Step,
 } from "./gha";
 import { fetchWorkflows, type Repository } from "./github";
-
-export type Input = {
-  repository: Repository | undefined;
-};
 
 export type Node = RepositoryNode | WorkflowNode | JobNode | ActionNode;
 
@@ -42,26 +37,19 @@ export type ActionNode = {
   dependencies: Node[];
 };
 
-export async function run(input: Input): Promise<RepositoryNode> {
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
-  });
-  const context: Context = {
-    octokit,
-  };
-
+export async function run(context: Context): Promise<RepositoryNode> {
   const root: RepositoryNode = {
     type: "repository",
-    repository: input.repository,
+    repository: context.repository,
     dependencies: [],
   };
 
   const workflowPaths = await fetchWorkflows(context, {
-    repository: input.repository,
+    repository: context.repository,
   });
   for (const workflowPath of workflowPaths) {
     const node = await _processWorkflow(context, {
-      repository: input.repository,
+      repository: context.repository,
       workflowPath,
       ref: undefined,
     });

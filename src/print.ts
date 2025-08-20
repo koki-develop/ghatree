@@ -1,10 +1,7 @@
 import chalk from "chalk";
+import type { Context } from "./context";
 import type { Repository } from "./github";
 import type { Node, RepositoryNode } from "./run";
-
-type Context = {
-  root: RepositoryNode;
-};
 
 const TREE_CHARS = {
   BRANCH: "├─",
@@ -31,7 +28,7 @@ function getNodeLabel(context: Context, node: Node): string {
 
     case "workflow":
       if (node.repository) {
-        if (isSameRepository(context.root.repository, node.repository)) {
+        if (isSameRepository(context.repository, node.repository)) {
           const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
           return chalk.green(`./${node.path}`) + ref;
         } else {
@@ -49,7 +46,7 @@ function getNodeLabel(context: Context, node: Node): string {
 
     case "action": {
       if (node.repository) {
-        if (isSameRepository(context.root.repository, node.repository)) {
+        if (isSameRepository(context.repository, node.repository)) {
           const path = node.path ? `./${node.path}` : ".";
           const ref = node.ref ? `${chalk.gray(`@${node.ref}`)}` : "";
           return path + ref;
@@ -95,9 +92,6 @@ function printNode(
   });
 }
 
-export function treePrint(node: RepositoryNode): void {
-  const context = {
-    root: node,
-  };
+export function treePrint(context: Context, node: RepositoryNode): void {
   printNode(context, node, "", true, true);
 }
