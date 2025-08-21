@@ -2,7 +2,7 @@
   "name": "ghatree",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "author": "koki-develop <kou.pg.0131@gmail.com>",
   "homepage": "https://github.com/koki-develop/ghatree",
   "repository": {

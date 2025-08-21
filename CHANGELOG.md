@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.5](https://github.com/koki-develop/ghatree/compare/v0.2.4...v0.2.5) (2025-08-21)
+
+
+### Bug Fixes
+
+* eliminate duplicate workflow definition fetching ([f98dcc4](https://github.com/koki-develop/ghatree/commit/f98dcc49c46e79f8d7b6f684c5715f301ea3122a))
+
 ## [0.2.4](https://github.com/koki-develop/ghatree/compare/v0.2.3...v0.2.4) (2025-08-20)
 
 
