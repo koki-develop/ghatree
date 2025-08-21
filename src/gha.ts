@@ -4,6 +4,7 @@ import type { Context } from "./context";
 import { fetchContent, type Repository } from "./github";
 
 export type WorkflowDefinition = {
+  path: string;
   jobs: Record<string, WorkflowJob>;
 };
 
@@ -56,10 +57,10 @@ export async function fetchWorkflowDefinition(
   });
 
   // TODO: validate schema
-  const workflowDefinition = yaml.parse(content) as WorkflowDefinition;
+  const workflowDefinition = yaml.parse(content);
 
   workflowDefinitionCaches.set(cacheKey, workflowDefinition);
-  return workflowDefinition;
+  return { path: params.workflowPath, ...workflowDefinition };
 }
 
 export type FetchActionDefinitionParams = {

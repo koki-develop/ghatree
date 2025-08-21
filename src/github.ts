@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Context } from "./context";
+import { fetchWorkflowDefinition, type WorkflowDefinition } from "./gha";
 
 export type Repository = {
   owner: string;
@@ -54,13 +55,21 @@ export type FetchWorkflowsParams = {
 export async function fetchWorkflows(
   context: Context,
   params: FetchWorkflowsParams,
-) {
+): Promise<WorkflowDefinition[]> {
   if (!params.repository) {
     const workflowsDir = path.join(process.cwd(), ".github/workflows");
     const files = fs.readdirSync(workflowsDir);
-    return files
-      .filter((file) => file.endsWith(".yml") || file.endsWith(".yaml"))
-      .map((file) => path.join(".github/workflows", file));
+    return await Promise.all(
+      files
+        .filter((file) => file.endsWith(".yml") || file.endsWith(".yaml"))
+        .map(async (file) => {
+          return await fetchWorkflowDefinition(context, {
+            repository: undefined,
+            workflowPath: path.join(".github/workflows", file),
+            ref: undefined,
+          });
+        }),
+    );
   }
 
   const { octokit } = context;
@@ -72,7 +81,24 @@ export async function fetchWorkflows(
     },
   );
 
-  return response
-    .filter((workflow) => workflow.path.startsWith(".github/workflows"))
-    .map((workflow) => workflow.path);
+  return (
+    await Promise.all(
+      response
+        .filter((workflow) => workflow.path.startsWith(".github/workflows"))
+        .map(async (workflow) => {
+          return await fetchWorkflowDefinition(context, {
+            repository: params.repository,
+            workflowPath: workflow.path,
+            ref: undefined,
+          }).catch((err) => {
+            if (err.status === 404) {
+              return null;
+            }
+            throw err;
+          });
+        }),
+    )
+  ).filter((workflow): workflow is WorkflowDefinition => {
+    return workflow !== null;
+  });
 }

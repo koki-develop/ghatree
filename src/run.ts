@@ -5,6 +5,7 @@ import {
   fetchWorkflowDefinition,
   parseUses,
   type Step,
+  type WorkflowDefinition,
 } from "./gha";
 import { fetchWorkflows, type Repository } from "./github";
 
@@ -45,14 +46,14 @@ export async function run(context: Context): Promise<RepositoryNode> {
     dependencies: [],
   };
 
-  const workflowPaths = await fetchWorkflows(context, {
+  const workflows = await fetchWorkflows(context, {
     repository: context.repository,
   });
-  for (const workflowPath of workflowPaths) {
-    const spinner = ora(workflowPath).start();
+  for (const workflow of workflows) {
+    const spinner = ora(workflow.path).start();
     await _processWorkflow(context, {
       repository: context.repository,
-      workflowPath,
+      workflow,
       ref: undefined,
     })
       .then((node) => {
@@ -71,27 +72,21 @@ export async function run(context: Context): Promise<RepositoryNode> {
 
 type ProcessWorkflowParams = {
   repository: Repository | undefined;
-  workflowPath: string;
+  workflow: WorkflowDefinition;
   ref: string | undefined;
 };
 
 async function _processWorkflow(
   context: Context,
-  { repository, workflowPath, ref }: ProcessWorkflowParams,
+  { repository, workflow, ref }: ProcessWorkflowParams,
 ): Promise<WorkflowNode> {
   const node: WorkflowNode = {
     type: "workflow",
     repository,
-    path: workflowPath,
+    path: workflow.path,
     ref,
     dependencies: [],
   };
-
-  const workflow = await fetchWorkflowDefinition(context, {
-    repository,
-    workflowPath,
-    ref,
-  });
 
   for (const [jobName, job] of Object.entries(workflow.jobs)) {
     const jobNode: JobNode = {
@@ -113,7 +108,11 @@ async function _processWorkflow(
 
       const reusableWorkflowNode = await _processWorkflow(context, {
         repository: uses.repository,
-        workflowPath: uses.path,
+        workflow: await fetchWorkflowDefinition(context, {
+          repository: uses.repository,
+          workflowPath: uses.path,
+          ref: uses.ref,
+        }),
         ref: uses.ref,
       });
       jobNode.dependencies.push(reusableWorkflowNode);
