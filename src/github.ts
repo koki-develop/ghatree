@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import type { Context } from "./context";
 import { fetchWorkflowDefinition, type WorkflowDefinition } from "./gha";
@@ -7,6 +8,25 @@ export type Repository = {
   owner: string;
   name: string;
 };
+
+function findRepositoryRoot(): string {
+  let currentDir = process.cwd();
+  const homeDir = os.homedir();
+
+  while (true) {
+    const workflowsDir = path.join(currentDir, ".github", "workflows");
+    if (fs.existsSync(workflowsDir)) {
+      return currentDir;
+    }
+
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir || currentDir === homeDir) {
+      // Reached root or home directory
+      throw new Error("No .github/workflows directory found.");
+    }
+    currentDir = parentDir;
+  }
+}
 
 type FetchContentParams = {
   repository: Repository | undefined;
@@ -22,7 +42,8 @@ export async function fetchContent(
 
   if (!params.repository) {
     // read from local
-    const filePath = path.join(process.cwd(), params.contentPath);
+    const repoRoot = findRepositoryRoot();
+    const filePath = path.join(repoRoot, params.contentPath);
     return fs.readFileSync(filePath, "utf-8");
   }
 
@@ -57,7 +78,8 @@ export async function fetchWorkflows(
   params: FetchWorkflowsParams,
 ): Promise<WorkflowDefinition[]> {
   if (!params.repository) {
-    const workflowsDir = path.join(process.cwd(), ".github/workflows");
+    const repoRoot = findRepositoryRoot();
+    const workflowsDir = path.join(repoRoot, ".github/workflows");
     const files = fs.readdirSync(workflowsDir);
     return await Promise.all(
       files
