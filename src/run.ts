@@ -267,11 +267,17 @@ async function _processSteps(
 
         const actionPath = normalizePath(step.uses);
         for (const [checkoutPath, repo] of checkoutState.checkouts.entries()) {
-          if (actionPath.startsWith(`${checkoutPath}/`)) {
-            const relativePath = actionPath.slice(checkoutPath.length + 1);
+          if (
+            actionPath === checkoutPath ||
+            actionPath.startsWith(`${checkoutPath}/`)
+          ) {
+            const relativePath =
+              actionPath === checkoutPath
+                ? ""
+                : actionPath.slice(checkoutPath.length + 1);
             return {
               workingRepository: repo,
-              usesStr: `./${relativePath}`,
+              usesStr: relativePath ? `./${relativePath}` : ".",
             };
           }
         }
