@@ -57,10 +57,13 @@ export async function fetchWorkflowDefinition(
   });
 
   // TODO: validate schema
-  const workflowDefinition = yaml.parse(content);
+  const workflowDefinition = {
+    path: params.workflowPath,
+    ...yaml.parse(content),
+  };
 
   workflowDefinitionCaches.set(cacheKey, workflowDefinition);
-  return { path: params.workflowPath, ...workflowDefinition };
+  return workflowDefinition;
 }
 
 export type FetchActionDefinitionParams = {
