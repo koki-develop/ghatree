@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/koki-develop/ghatree/compare/v0.3.0...v0.4.0) (2025-08-21)
+
+
+### Features
+
+* Add repository root detection for local workflows ([61ccbfe](https://github.com/koki-develop/ghatree/commit/61ccbfedeea7c82adbb3272e633dd33081914af2))
+
+
+### Bug Fixes
+
+* Handle checkout path references without trailing subdirectories ([16fa1e0](https://github.com/koki-develop/ghatree/commit/16fa1e01d04d12f137491a8031d38dace53483a6))
+* Improve error handling in CLI entry point ([fa286c0](https://github.com/koki-develop/ghatree/commit/fa286c05a55f03352ee3af8aa4de367693d7ee9b))
+
 ## [0.3.0](https://github.com/koki-develop/ghatree/compare/v0.2.5...v0.3.0) (2025-08-21)
 
 
