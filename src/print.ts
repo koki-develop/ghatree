@@ -45,6 +45,12 @@ function getNodeLabel(context: Context, node: Node): string {
       return `${chalk.yellow(node.path)}${node.dependencies.length === 0 ? ` ${chalk.gray("(no dependencies)")}` : ""}`;
 
     case "action": {
+      if (node.path?.startsWith("docker://")) {
+        const image = node.path.slice(9);
+        const ref = node.ref ? `${chalk.gray(`:${node.ref}`)}` : "";
+        return `docker://${image}${ref}`;
+      }
+
       if (node.repository) {
         if (isSameRepository(context.repository, node.repository)) {
           const path = node.path ? `./${node.path}` : ".";

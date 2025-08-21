@@ -150,6 +150,10 @@ async function _processAction(
     dependencies: [],
   };
 
+  if (actionPath?.startsWith("docker://")) {
+    return node;
+  }
+
   const action = await fetchActionDefinition(context, {
     repository,
     actionPath,

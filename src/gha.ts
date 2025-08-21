@@ -137,9 +137,18 @@ export function parseUses({
     ref: undefined,
   };
 
+  if (str.startsWith("docker://")) {
+    const [image, ...tag] = str.slice(9).split(":");
+    return {
+      repository: undefined,
+      path: `docker://${image}`,
+      ref: tag.length > 0 ? tag.join("") : undefined,
+    };
+  }
+
   const [action, ...ref] = str.split("@");
   if (!action) {
-    throw new Error(`Invalid uses format: ${JSON.stringify(str)}`);
+    throw new Error(`Unknown uses format: ${JSON.stringify(str)}`);
   }
   if (ref.length > 0) {
     uses.ref = ref.join("@");
@@ -155,7 +164,7 @@ export function parseUses({
   } else {
     const [owner, name, ...paths] = action.split("/");
     if (!owner || !name) {
-      throw new Error(`Invalid uses format: ${JSON.stringify(str)}`);
+      throw new Error(`Unknown uses format: ${JSON.stringify(str)}`);
     }
     uses.repository = { owner, name };
     if (paths.length > 0) {

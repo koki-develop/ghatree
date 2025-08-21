@@ -97,24 +97,24 @@ describe("parseUses", () => {
   test("throws error for empty string", () => {
     expect(() => {
       parseUses({ str: "", workingRepository: undefined });
-    }).toThrow(`Invalid uses format: ""`);
+    }).toThrow(`Unknown uses format: ""`);
   });
 
   test("throws error for owner only", () => {
     expect(() => {
       parseUses({ str: "actions", workingRepository: undefined });
-    }).toThrow(`Invalid uses format: "actions"`);
+    }).toThrow(`Unknown uses format: "actions"`);
   });
 
   test("throws error for owner only with ref", () => {
     expect(() => {
       parseUses({ str: "actions@v1", workingRepository: undefined });
-    }).toThrow(`Invalid uses format: "actions@v1"`);
+    }).toThrow(`Unknown uses format: "actions@v1"`);
   });
 
   test("throws error for @ only", () => {
     expect(() => {
       parseUses({ str: "@v1", workingRepository: undefined });
-    }).toThrow(`Invalid uses format: "@v1"`);
+    }).toThrow(`Unknown uses format: "@v1"`);
   });
 });
