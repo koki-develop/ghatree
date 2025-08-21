@@ -32,3 +32,4 @@ jobs:
             WebFetch(domain:github.com)
             WebFetch(domain:raw.githubusercontent.com)
             WebFetch(domain:devblogs.microsoft.com)
+            WebFetch(domain:www.typescriptlang.org)
