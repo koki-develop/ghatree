@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/koki-develop/ghatree/compare/v0.2.5...v0.3.0) (2025-08-21)
+
+
+### Features
+
+* Support uses: docker://* format ([7d84a16](https://github.com/koki-develop/ghatree/commit/7d84a162f9fbf40d63d14b079fec87dbeb769c84))
+
+
+### Bug Fixes
+
+* Fix workflow cache ([182b1d1](https://github.com/koki-develop/ghatree/commit/182b1d1aefe8646fdb1b1fe7e3f6b2a87aca8e2c))
+
 ## [0.2.5](https://github.com/koki-develop/ghatree/compare/v0.2.4...v0.2.5) (2025-08-21)
 
 
