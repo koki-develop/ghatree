@@ -32,7 +32,7 @@
     "yaml": "2.8.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
+    "@biomejs/biome": "2.2.2",
     "@types/bun": "1.2.20",
     "husky": "9.1.7",
     "lint-staged": "16.1.5",
