@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   claude-renovate-review:
-    if: github.event.pull_request.user.login == 'renovate[bot]'
+    if: github.event.pull_request.user.login == 'mend[bot]'
     timeout-minutes: 30
     runs-on: ubuntu-latest
     permissions:
