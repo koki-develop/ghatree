@@ -35,7 +35,7 @@
     "@biomejs/biome": "2.2.2",
     "@types/bun": "1.2.20",
     "husky": "9.1.7",
-    "lint-staged": "16.1.5",
+    "lint-staged": "16.4.0",
     "typescript": "5.9.2"
   }
 }
